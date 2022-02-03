@@ -1,0 +1,23 @@
+
+hyper_dict_macro! comes in 4 flavours, either string or integer key and value or key-value input.
+
+key only input will create a hash map that does not attempt to verify the key. If an invalid key is used, a value will be returned.
+If a key-value pair is used, keys will be verified at the expense of extra memory (keys and values are stored in the array)
+
+Two traits are used to indicate a hyper dict, HyperDict and HyperDictValueOnly. The both contain only one function, get, which maps keys to values.
+In HyperDict this returns Option<&T>, and in HyperDictValueOnly this returns &T  where T is the type of the value.
+
+While values can be any type (but all the same type) keys can only be primitive numer types (fixed width integer and float), or &str.
+
+When creating with hyper_dict_macro!, the value or key-valye tuples must be supplied along with the minimal perfect hashing function constant, k. If &str is used
+as the key, the index must also be supplied.
+
+Here are some examples:
+
+hyper_dict_macro!(ArbitraryHD, {0: 1, 23: 2, 67: 3, 32: 4, 76: 5, 8: 6}, 0x65)
+
+This expands to a struct called ArbitraryHD representing a integer, key-only map with k=0x65.
+
+hyper_dict_macro!(OperatorHD, {"add": 1.0, "sub": -1.0, "mul": 2.0, "div": 3.0, "sqrt": 0.5}, 0x35, 0)
+
+This expands to a struct called OperatorHD representing a &str, key-value pair map with k=0x35
